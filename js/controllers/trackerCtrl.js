@@ -21,7 +21,10 @@ angular.module('Activiter2')
 
     $scope.pane = ActiviterPane;
 
-    $scope.categories = ActiviterDB.config.categories;
+    ActiviterDB.loadConfig()
+      .then(function() {
+        $scope.categories = ActiviterDB.config.categories;
+      });
 
     $scope.expandedCategory = "";
 //    $scope.expandedIndex = "";

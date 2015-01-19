@@ -7,72 +7,102 @@ angular.module('Activiter2')
 
     var todayString = "";
 
-    db.config = {
-      "entryFocus": "duration",
-      "categories": [
-        {
-          "name": "Support - Remedy",
-          "subcategories": [
-            "Quickdocs",
-            "CDP",
-            "SupportPoint",
-            "Merit",
-            "CLT",
-            "QMS",
-            "ELMO",
-            "Exchange",
-            "Video Conf",
-            "Yammer",
-            "vNet",
-            "ETS",
-            "AssetVision"
-          ]
-        },
-        {
-          "name": "General Support",
-          "subcategories": [
-            "Quickdocs",
-            "CDP",
-            "SupportPoint",
-            "CLT",
-            "QMS",
-            "ELMO",
-            "Merit"
-          ]
-        },
-        {
-          "name": "Projects",
-          "subcategories": [
-            "Quickdocs",
-            "QMS",
-            "CDP",
-            "SupportPoint",
-            "Merit",
-            "CLT",
-            "ELMO"
-          ]
-        },
-        {
-          "name": "Team Activities",
-          "subcategories": [
-            "Knowledge Transfer",
-            "Documentation",
-            "Meetings",
-            "Other"
-          ]
-        },
-        {
-          "name": "Contractual",
-          "subcategories": [
-            "Quickdocs",
-            "CDP",
-            "ELMO",
-            "Merit",
-            "SupportPoint"
-          ]
+    db.loadConfig = function() {
+      var deferred = $q.defer();
+
+      chrome.storage.local.get('config', function(response) {
+        if (!isEmptyObj(response)) {
+          db.config = response.config;
+        } else {
+          db.config = {
+            "entryFocus": "description",
+            "categories": [
+              {
+                "name": "Category 1",
+                "subcategories": ["Subcategory 1", "Subcategory 2", "Subcategory 3"]
+              },
+              {
+                "name": "Category 2",
+                "subcategories": ["Subcategory 4", "Subcategory 5", "Subcategory 6"]
+              }
+            ]
+          }
         }
-      ]
-    }
+        deferred.resolve();
+      });
+      return deferred.promise;
+    };
+
+    db.saveConfig = function() {
+      chrome.storage.local.set({'config': db.config});
+    };
+
+//    db.config = {
+//      "entryFocus": "duration",
+//      "categories": [
+//        {
+//          "name": "Support - Remedy",
+//          "subcategories": [
+//            "Quickdocs",
+//            "CDP",
+//            "SupportPoint",
+//            "Merit",
+//            "CLT",
+//            "QMS",
+//            "ELMO",
+//            "Exchange",
+//            "Video Conf",
+//            "Yammer",
+//            "vNet",
+//            "ETS",
+//            "AssetVision"
+//          ]
+//        },
+//        {
+//          "name": "General Support",
+//          "subcategories": [
+//            "Quickdocs",
+//            "CDP",
+//            "SupportPoint",
+//            "CLT",
+//            "QMS",
+//            "ELMO",
+//            "Merit"
+//          ]
+//        },
+//        {
+//          "name": "Projects",
+//          "subcategories": [
+//            "Quickdocs",
+//            "QMS",
+//            "CDP",
+//            "SupportPoint",
+//            "Merit",
+//            "CLT",
+//            "ELMO"
+//          ]
+//        },
+//        {
+//          "name": "Team Activities",
+//          "subcategories": [
+//          "Knowledge Transfer",
+//            "Documentation",
+//            "Meetings",
+//            "Other"
+//          ]
+//        },
+//        {
+//          "name": "Contractual",
+//          "subcategories": [
+//            "Quickdocs",
+//            "CDP",
+//            "ELMO",
+//            "Merit",
+//            "SupportPoint"
+//          ]
+//      }
+//      ]
+//    }
 
     db.today = new Date(new Date().toDateString());
     todayString = toEpoch(db.today);

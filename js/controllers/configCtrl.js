@@ -138,6 +138,10 @@ angular.module('Activiter2')
       }
     };
 
+    $scope.saveAll = function() {
+      ActiviterDB.saveConfig();
+    };
+
     $scope.$on('boundsChanged', function() {
       $scope.$apply();
     });
