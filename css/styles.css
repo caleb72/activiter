@@ -1,0 +1,71 @@
+/* CSS file placeholder. */
+
+label.activiter_tracker {
+  font-weight: bold;
+  padding-top: 9px;
+}
+
+label.activiter_config {
+  padding-top: 9px;
+}
+
+select.activiter_config {
+  height: 100%;
+}
+
+.activiter_arrow {
+  padding: 5px 15px 5px 15px;
+  font-size: 20px;
+}
+
+.activiter_tracker_row {
+
+}
+
+.activiter_col {
+  padding: 0px;
+}
+
+.activiter_panel {
+  background:#008CBA;
+  color:white;
+}
+
+.activiter_selector {
+  cursor:pointer;
+}
+
+.activiter_scroll {
+  overflow-y:auto;
+}
+
+.activiter_modal {
+  display: block;
+  visibility: visible;
+  padding: 0px;
+}
+
+.activiter_titlebar {
+  padding: 1rem;
+  font-weight: bold;
+}
+
+.activiter_modal_buttons {
+  text-align: center;
+}
+
+.activiter_audit_header {
+  font-weight: bold;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.activiter_audit_column {
+  border: 1px black solid;
+  font-size: 14px;
+}
+
+p.activiter_audit {
+  padding-top: 9px;
+  font-size: 12px;
+}

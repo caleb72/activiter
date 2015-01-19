@@ -1,0 +1,18 @@
+<div class="row activiter_audit_header">
+  <div class="medium-2 large-2 columns activiter_audit_column">Cat</div>
+  <div class="medium-2 large-2 columns activiter_audit_column">Sub</div>
+  <div class="medium-3 large-3 columns activiter_audit_column">Description</div>
+  <div class="medium-1 large-1 columns activiter_audit_column">Mins</div>
+  <div class="medium-2 large-2 columns activiter_audit_column">Timestamp</div>
+  <div class="medium-2 large-2 columns activiter_audit_column">&nbsp;</div>
+</div>
+<div style="height:{{pane.height - 80}}px; overflow-y:auto;">
+  <div class="row" ng-repeat="item in db.todayItems()">
+    <div class="medium-2 large-2 columns"><p class="activiter_audit">{{item.category}}</p></div>
+    <div class="medium-2 large-2 columns"><p class="activiter_audit">{{item.subcategory}}</p></div>
+    <div class="medium-3 large-3 columns"><p class="activiter_audit">{{item.description}}</p></div>
+    <div class="medium-1 large-1 columns"><p class="activiter_audit">{{item.duration}}</p></div>
+    <div class="medium-2 large-2 columns"><p class="activiter_audit">{{item.timestamp | date:'dd/MM/yyyy HH:mm:ss'}}</p></div>
+    <div class="medium-2 large-2 columns"><a class="tiny button" ng-click="removeItem($index)">Remove</a></div>
+  </div>
+</div>

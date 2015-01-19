@@ -1,0 +1,128 @@
+<div>
+  <dl class="tabs" data-tab>
+    <dd ng-class="isTabActive('tracker')" ng-click="navTo('tracker')"><a>Tracker</a></dd>
+    <dd ng-class="isTabActive('task')" ng-click="navTo('task')"><a>Task</a></dd>
+  </dl>
+
+  <div class="tabs-content">
+    <div ng-class="['content', isTabActive('tracker')]" id="tracker">
+      <div style="height: {{pane.height}}px; overflow-y: auto;">
+        <!-- REPORT DATE -->
+        <div class="row">
+          <div class="small-1 medium-1 large-1 columns activiter_col">&nbsp;</div>
+          <div class="small-10 medium-10 large-10 columns activiter_col">
+            <label>
+              Report Type:
+              <select ng-model="trackForm.type">
+                <option value="summary">Summary</option>
+                <option value="detail">Detailed</option>
+              </select>
+            </label>
+          </div>
+          <div class="small-1 medium-1 large-1 columns activiter_col">&nbsp;</div>
+        </div>
+
+        <div class="row">
+          <div class="small-1 medium-1 large-1 columns activiter_col">&nbsp;</div>
+          <div class="small-3 medium-2 large-2 columns activiter_col">
+            <label class="activiter_tracker">From:</label>
+          </div>
+          <div class="small-4 medium-2 large-2 columns activiter_col">
+            <input id="start" type="text" class="datepicker" ng-model="trackForm.start | date:'mediumDate'" activiter-datepicker on-select="changeDate(id, newDate)">
+          </div>
+          <div class="small-4 medium-7 large-7 columns">&nbsp;</div>
+        </div>
+
+        <div class="row">
+          <div class="small-1 medium-1 large-1 columns activiter_col">&nbsp;</div>
+          <div class="small-3 medium-2 large-2 columns activiter_col">
+            <label class="activiter_tracker">To:</label>
+          </div>
+          <div class="small-4 medium-2 large-2 columns activiter_col">
+            <input id="end" type="text" class="datepicker" ng-model="trackForm.end | date:'mediumDate'" activiter-datepicker on-select="changeDate(id, newDate)">
+          </div>
+          <div class="small-4 medium-7 large-7 columns">&nbsp;</div>
+        </div>
+
+        <div class="row">
+          <div class="small-1 medium-1 large-1 columns activiter_col">&nbsp;</div>
+          <div class="small-3 medium-2 large-2 columns activiter_col">
+            <label class="activiter_tracker">Group A:</label>
+          </div>
+          <div class="small-4 medium-2 large-2 columns activiter_col">
+              <select ng-model="trackForm.groupBy1" ng-disabled="isDetailed()">
+              <option value="date">Date</option>
+              <option value="category">Category</option>
+              <option value="subcategory">Subcategory</option>
+            </select>
+          </div>
+          <div class="small-4 medium-7 large-7 columns activiter_col">&nbsp;</div>
+        </div>
+
+        <div class="row">
+          <div class="small-1 medium-1 large-1 columns activiter_col">&nbsp;</div>
+          <div class="small-3 medium-2 large-2 columns activiter_col">
+            <label class="activiter_tracker">Group B:</label>
+          </div>
+          <div class="small-4 medium-2 large-2 columns activiter_col">
+            <select ng-model="trackForm.groupBy2" ng-disabled="isDetailed()">
+              <option value="date">Date</option>
+              <option value="category">Category</option>
+              <option value="subcategory">Subcategory</option>
+              <option value="none">None</option>
+            </select>
+          </div>
+          <div class="small-4 medium-7 large-7 columns activiter_col">&nbsp;</div>
+        </div>
+
+        <div class="row">
+          &nbsp;
+        </div>
+        <div class="row" style="text-align:center;">
+          <a class="button" ng-click="runReport()">Run</a>
+        </div>
+      </div>
+    </div>
+    <div ng-class="['content', isTabActive('task')]" id="task">
+      <h2>TASK REPORTING</h2>
+    </div>
+
+    <!-- Modal for generated report with controls to export to csv -->
+    <div id="reportView" ng-class="['reveal-modal','full',revealClass]" activiter-modal>
+      <div class="panel activiter_panel activiter_titlebar">REPORTS VIEW</div>
+        <div class="row"><a class="tiny button" ng-click="exportReport()">Export</a></div>
+        <div class="row" ng-repeat="(key,val) in report">
+
+          <!-- Summary Report with 1 grouping -->
+          <div ng-if="isSummary(1)">
+            <div class="small-4 medium-4 large-4 columns activiter_col">{{key}}</div>
+            <div class="small-4 medium-4 large-4 columns activiter_col">{{val.items}}</div>
+            <div class="small-4 medium-4 large-4 columns activiter_col">{{val.duration}}</div>
+          </div>
+
+          <!-- Summary Report with 2 groupings -->
+          <div ng-if="isSummary(2)">
+            <div ng-repeat="(k,v) in val">
+              <div class="small-3 medium-3 large-3 columns activiter_col">{{key}}</div>
+              <div class="small-3 medium-3 large-3 columns activiter_col">{{k}}</div>
+              <div class="small-3 medium-3 large-3 columns activiter_col">{{v.items}}</div>
+              <div class="small-3 medium-3 large-3 columns activiter_col">{{v.duration}}</div>
+            </div>
+          </div>
+
+          <!-- Detail Report with no groupings -->
+          <div ng-if="isDetailed()">
+            <div class="small-1 medium-1 large-1 columns activiter_col">{{val[0]}}</div>
+            <div class="small-2 medium-2 large-2 columns activiter_col">{{val[1]}}</div>
+            <div class="small-2 medium-2 large-2 columns activiter_col">{{val[2]}}</div>
+            <div class="small-3 medium-3 large-3 columns activiter_col">{{val[3] || "&nbsp;"}}</div>
+            <div class="small-1 medium-1 large-1 columns activiter_col">{{val[4] || "&nbsp;"}}</div>
+            <div class="small-1 medium-1 large-1 columns activiter_col">{{val[5]}}</div>
+            <div class="small-2 medium-2 large-2 columns activiter_col">{{val[6] | activiterdate | date:'yyyyMMdd HH:mm:ss'}}</div>
+          </div>
+
+        </div>
+      <a class="close-reveal-modal" ng-click="cancelEntry()">&#215;</a>
+    </div>
+  </div>
+</div>

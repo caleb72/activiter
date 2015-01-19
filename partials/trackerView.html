@@ -1,0 +1,72 @@
+<div class="row">
+  <div class="small-4 medium-2 large-2 columns activiter_col">
+    <label class="activiter_tracker">Current Date:</label>
+  </div>
+  <div class="small-4 medium-2 large-2 columns activiter_col">
+    <input id="today" type="text" class="datepicker" ng-model="db.today | date:'mediumDate'" activiter-datepicker on-select="setDate(id, newDate)">
+  </div>
+  <div class="small-4 medium-8 large-8 columns"></div>
+</div>
+<div class="activiter_scroll" style="height:{{pane.height-65}}px;" activiter-scroll>
+
+  <div class="row activiter_tracker_row" ng-repeat="category in categories">
+    <div class="medium-12 large-12 columns activiter_col">
+      <div id="{{category.name}}" class="panel activiter_panel activiter_selector" ng-click="expand(category.name)">{{category.name}}</div>
+    </div>
+    <ul ng-show="isExpanded(category.name)" class="small-block-2 medium-block-grid-3 large-block-grid-5">
+      <li ng-repeat="sub in category.subcategories">
+        <div class="panel callout activiter_selector" ng-click="enterTime(category.name, sub)">{{sub}}</div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Tracker Entry Modal Dialog -->
+  <div id="taskEntry" ng-class="['reveal-modal','medium',revealClass]" activiter-modal>
+    <div class="panel activiter_panel activiter_titlebar">TIME TRACKING ENTRY</div>
+    <form>
+      <div class="row">
+        <div class="medium-6 large-6 columns">
+          <label>
+            Category:
+            <input type="text" disabled tabindex=1 ng-model="form.category">
+          </label>
+        </div>
+        <div class="medium-6 large-6 columns">
+          <label>
+            Sub-Category:
+            <input type="text" disabled tabindex=2 ng-model="form.subcategory">
+          </label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="large-12 columns">
+          <label>
+            Description:
+            <input type="text" ng-model="form.description" tabindex=3 activiter-entry-focus activiter-field="description">
+          </label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="medium-6 large-6 columns">
+          <label>
+            Time (minutes):
+            <input type="number" ng-model="form.duration" tabindex=4 activiter-entry-focus activiter-field="duration">
+          </label>
+        </div>
+        <div class="medium-6 large-6 columns">
+          <label>
+            Time Entered:
+            <input type="text" disabled tabindex=5 ng-model="form.timestamp | activiterdate | date:'medium'">
+          </label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="large-12 columns activiter_modal_buttons">
+
+          <a class="button" tabindex=6 ng-click="saveEntry()" ng-keypress="saveKeyPress($event)">Save</a>
+        </div>
+      </div>
+    </form>
+    <a class="close-reveal-modal" ng-click="cancelEntry()">&#215;</a>
+  </div>
+</div>
