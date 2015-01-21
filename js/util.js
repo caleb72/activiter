@@ -14,16 +14,20 @@ var fromDate = function(date) {
 
 var toTimestamp = function(date) {
   return fromDate(date) + " " + pad(date.getHours()) + ":" + pad(date.getMinutes()) + ":" + pad(date.getSeconds());
-}
+};
+
+var toFileTimestamp = function(date) {
+  return fromDate(date) + "" + pad(date.getHours()) + "" + pad(date.getMinutes()) + "" + pad(date.getSeconds());
+};
 
 var toEpoch = function(date) {
   return date.valueOf().toString();
-}
+};
 
 var fromEpoch = function(epoch) {
   return parseInt(epoch);
-}
+};
 
 var isEmptyObj = function(obj) {
   return !(Object.keys(obj).length);
-}
+};

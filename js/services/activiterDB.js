@@ -292,8 +292,23 @@ angular.module('Activiter2')
       return deferred.promise;
     };
 
-    db.exportReport = function() {
+    db.exportReport = function(form) {
+      var deferred = $q.defer()
 
+      $timeout(function() {
+        if (!db.config.rootDirectory) {
+          deferred.resolve(); // Later this should be a reject message
+        }
+
+        chrome.fileSystem.restoreEntry(db.config.rootDirectory, function(entry) {
+            if (entry.isDirectory) {
+              var filename = form.type.toUpperCase() + "_" + fromDate(form.start) + "-" + fromDate(form.end) + "_" + toFileTimestamp(new Date()) + ".csv";
+              deferred.resolve();
+            }
+          });
+      }, 1);
+
+      return deferred.promise;
     };
 
     return db;

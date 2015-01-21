@@ -85,4 +85,11 @@ angular.module('Activiter2')
       $scope.revealClass="activiter_modal";
     };
 
+    $scope.exportReport = function() {
+      ActiviterDB.exportReport($scope.trackForm)
+        .then(function() {
+          $scope.cancelEntry();
+        });
+    };
+
   });
