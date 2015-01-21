@@ -142,6 +142,17 @@ angular.module('Activiter2')
       ActiviterDB.saveConfig();
     };
 
+    $scope.genForm = {
+      "rootDirectory": $scope.db.config.rootDirectoryPath || undefined
+    };
+
+    $scope.chooseDirectory = function() {
+      ActiviterDB.getRootDirectory()
+        .then(function(path) {
+          $scope.genForm.rootDirectory = path;
+        });
+    };
+
     $scope.$on('boundsChanged', function() {
       $scope.$apply();
     });

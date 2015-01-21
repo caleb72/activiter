@@ -16,6 +16,8 @@ angular.module('Activiter2')
         } else {
           db.config = {
             "entryFocus": "description",
+            "rootDirectory": undefined,
+            "rootDirectoryPath": undefined,
             "categories": [
               {
                 "name": "Category 1",
@@ -103,6 +105,23 @@ angular.module('Activiter2')
 //      }
 //      ]
 //    }
+
+
+    db.getRootDirectory = function() {
+      var deferred = $q.defer();
+
+      chrome.fileSystem.chooseEntry({type: "openDirectory"}, function(entry) {
+        if (entry) {
+          chrome.fileSystem.getDisplayPath(entry, function(path) {
+            db.config.rootDirectory = chrome.fileSystem.retainEntry(entry);
+            db.config.rootDirectoryPath = path
+            chrome.storage.local.set({"config": db.config});
+            deferred.resolve(path);
+          });
+        }
+      });
+      return deferred.promise;
+    };
 
     db.today = new Date(new Date().toDateString());
     todayString = toEpoch(db.today);
@@ -273,95 +292,8 @@ angular.module('Activiter2')
       return deferred.promise;
     };
 
-    // This will probably need to use $q.defer()
-    db.generateSummaryReport = function(criteria) {
-      var deferred = $q.defer();
+    db.exportReport = function() {
 
-      report = {};
-      var start = new Date(criteria.start.toDateString());
-      var end = new Date(criteria.end.toDateString());
-      var reportDays = (end-start)/86400000;
-      var g1 = criteria.groupBy1;
-      var g2 = criteria.groupBy2;
-
-      $timeout(function() {
-        var iterations = 0;
-        for (var i = start; i <= end; i.setDate(i.getDate() + 1)) {
-          var todayString = toEpoch(i);
-          loadSummaryData(todayString);
-          chrome.storage.local.get(todayString, function(result) {
-            if (isEmptyObj(result)) {
-              return;
-            } else {
-              var day = result[todayString];
-              for (index in day.entries) {
-                var stats = {
-                  "date": todayString,
-                  "category": day.entries[index].category,
-                  "subcategory": day.entries[index].subcategory
-                };
-
-                var duration = parseInt(day.entries[index].duration);
-
-                // handle cases where values don't exist yet
-                if (!(report.hasOwnProperty(stats[g1])) && (g2 === 'none')) {
-                  report[stats[g1]] = {
-                    "items" : 1,
-                    "duration" : duration
-                  };
-                } else if (!(report.hasOwnProperty(stats[g1]))) {
-                  report[stats[g1]] = {};
-                } else if (g2 !== 'none' && !(report[stats[g1]].hasOwnProperty(stats[g2]))) {
-                  report[stats[g1]][stats[g2]] = {
-                    "items": 1,
-                    "duration": duration
-                  };
-                } else if (g2 === 'none') {
-                  report[stats[g1]].items++;
-                  report[stats[g1]].duration += duration;
-                } else {
-                  report[stats[g1]][stats[g2]].items++;
-                  report[stats[g1]][stats[g2]].duration += duration;
-                }
-              }
-            }
-          })
-        }
-        deferred.resolve();
-      }, 1);
-      return deferred.promise;
-    };
-
-    // This will probably need to use $q.defer()
-    db.generateDetailReport = function(criteria) {
-      var deferred = $q.defer();
-
-      report = [];
-      var start = new Date(criteria.start.toDateString());
-      var end = new Date(criteria.end.toDateString());
-
-      $timeout(function() {
-        for (var i = start; i <= end; i.setDate(i.getDate() + 1)) {
-          // var todayString = <convert to YYYYMMDD format>
-          // var day = <get day from storage using todayString as key>
-          // Temp values for testing
-          var todayString = i.getYear() + 1900 + "" + i.getMonth() + 1 + "" + i.getDate();
-          var day = todayData;
-          for (index in day.entries) {
-            var entry = day.entries[index];
-            report.push([
-              todayString,
-              entry.category,
-              entry.subcategory,
-              entry.source,
-              entry.description,
-              entry.duration,
-              entry.timestamp]);
-          }
-        }
-        deferred.resolve();
-      }, 1);
-      return deferred.promise;
     };
 
     return db;
