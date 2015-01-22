@@ -292,8 +292,44 @@ angular.module('Activiter2')
       return deferred.promise;
     };
 
+    var summaryTextForExport = function() {
+      var getSecondGroup = function(g1, data) {
+        var text = "";
+
+        for (g2 in data) {
+          text += '"' + g1 + '","' + g2 + '","' + data[g2].items + '","' + data[g2].duration + '"\n';
+        }
+        return text;
+      };
+
+      var reportText = "";
+      for (g1 in report) {
+        if (!report[g1].hasOwnProperty('items')) {
+          reportText += getSecondGroup(g1, report[g1]);
+        } else {
+          reportText += '"' + g1 + '","' + report[g1].items + '","' + report[g1].duration + '"\n';
+        }
+      }
+      return reportText;
+    };
+
+    var detailTextForExport = function() {
+      var reportText = "";
+      for (line in report) {
+        var data = report[line].slice(0);
+        data[data.length-1] = toTimestamp(new Date(fromEpoch(data[data.length-1])));
+        reportText += '"' + data.join('","') + '"\n';
+      }
+      return reportText;
+    };
+
     db.exportReport = function(form) {
       var deferred = $q.defer()
+
+      var exportTextFunction = {
+        "summary": summaryTextForExport,
+        "detail": detailTextForExport
+      };
 
       $timeout(function() {
         if (!db.config.rootDirectory) {
@@ -303,7 +339,17 @@ angular.module('Activiter2')
         chrome.fileSystem.restoreEntry(db.config.rootDirectory, function(entry) {
             if (entry.isDirectory) {
               var filename = form.type.toUpperCase() + "_" + fromDate(form.start) + "-" + fromDate(form.end) + "_" + toFileTimestamp(new Date()) + ".csv";
-              deferred.resolve();
+              var reportText = exportTextFunction[form.type]();
+              var blob = new Blob([reportText], {type: 'text/plain'});
+
+              chrome.fileSystem.chooseEntry({type: 'saveFile', suggestedName: filename}, function(writeable) {
+                writeable.createWriter(function(writer) {
+                  writer.onwriteend = function() {
+                    deferred.resolve();
+                  }
+                  writer.write(blob);
+                });
+              });
             }
           });
       }, 1);
