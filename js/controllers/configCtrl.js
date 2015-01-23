@@ -153,6 +153,17 @@ angular.module('Activiter2')
         });
     };
 
+    $scope.importConfig = function() {
+      ActiviterDB.importConfig()
+        .then(function() {
+          $scope.db = ActiviterDB;
+        });
+    };
+
+    $scope.exportConfig = function() {
+      ActiviterDB.exportConfig();
+    };
+
     $scope.$on('boundsChanged', function() {
       $scope.$apply();
     });

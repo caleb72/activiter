@@ -1,5 +1,5 @@
 angular.module('Activiter2')
-  .factory('ActiviterDB', function($q, $timeout) {
+  .factory('ActiviterDB', function($q, $timeout, $rootScope) {
     var todayData = {};
     var report = [];
 
@@ -37,6 +37,62 @@ angular.module('Activiter2')
 
     db.saveConfig = function() {
       chrome.storage.local.set({'config': db.config});
+    };
+
+    db.importConfig = function() {
+      var deferred = $q.defer();
+
+      $timeout(function() {
+        if (!db.config.rootDirectory) {
+          deferred.resolve(); // Later this should be a reject message
+        }
+
+        chrome.fileSystem.restoreEntry(db.config.rootDirectory, function(entry) {
+            if (entry.isDirectory) {
+              chrome.fileSystem.chooseEntry({type: "openFile"}, function(fileEntry) {
+                if (!fileEntry) {
+                  deferred.resolve();
+                } else {
+                  fileEntry.file(function(file) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                      db.config = JSON.parse(e.target.result);
+                      db.saveConfig();
+                      deferred.resolve();
+                    }
+                    reader.readAsText(file);
+                  });
+                }
+              });
+            }
+        });
+
+      }, 1);
+
+      return deferred.promise;
+    };
+
+    db.exportConfig = function() {
+      if (!db.config.rootDirectory) {
+        return; // Later this should be a reject message
+      }
+
+      chrome.fileSystem.restoreEntry(db.config.rootDirectory, function(entry) {
+          if (entry.isDirectory) {
+            var filename = "CONFIG_" + toFileTimestamp(new Date());
+            var json = JSON.stringify(db.config);
+            var blob = new Blob([json], {type: 'application/json'});
+
+            chrome.fileSystem.chooseEntry({type: 'saveFile', suggestedName: filename}, function(writeable) {
+              writeable.createWriter(function(writer) {
+                writer.onwriteend = function() {
+                  return;
+                }
+                writer.write(blob);
+              });
+            });
+          }
+        });
     };
 
 //    db.config = {
