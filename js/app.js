@@ -6,10 +6,6 @@ app.config(['$routeProvider', function($routeProvider) {
       templateUrl: 'partials/trackerView.html',
       controller: 'TrackerCtrl'
     })
-    .when('/task', {
-      templateUrl: 'partials/taskView.html',
-      controller: 'TaskCtrl'
-    })
     .when('/audit', {
       templateUrl: 'partials/auditView.html',
       controller: 'AuditCtrl'

@@ -1,13 +1,14 @@
 {
   "manifest_version": 2,
-  "name": "Activiter2",
-  "short_name": "Activiter2",
-  "description": "Description for Activiter2",
+  "name": "Activiter",
+  "short_name": "Activiter",
+  "description": "Simple Chrome App for Time-Tracking",
 
-  "version": "0.0.1.0",
+  "version": "0.8.0.0",
 
   "icons": {
     "16": "assets/icon_16.png",
+    "48": "assets/icon_48.png",
     "128": "assets/icon_128.png"
   },
 
