@@ -4,7 +4,7 @@
   "short_name": "Activiter",
   "description": "Simple Chrome App for Time-Tracking",
 
-  "version": "0.8.0.0",
+  "version": "0.8.0.1",
 
   "icons": {
     "16": "assets/icon_16.png",
