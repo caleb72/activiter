@@ -29,7 +29,7 @@
           </div>
           <div class="medium-6 large-6 columns">
             <select size="8" class="activiter_config" ng-model="catForm.catInd" ng-change="selectCat(catForm.catInd)">
-              <option value="{{$index}}" ng-repeat="cat in db.config.categories" ng-selected="isCatSelected($index)">{{cat.name}}</option>
+              <option value="{{$index}}" ng-repeat="cat in db.config.categories track by $index" ng-selected="isCatSelected($index)">{{cat.name}}</option>
             </select>
           </div>
           <div class="medium-5 large-5 columns">
@@ -60,7 +60,7 @@
           </div>
           <div class="medium-6 large-6 columns">
             <select size="8" class="activiter_config" ng-model="catForm.subInd" ng-change="selectSub(catForm.catInd, catForm.subInd)">
-              <option value="{{$index}}" ng-repeat="sub in db.config.categories[catForm.catInd].subcategories" ng-selected="isSubSelected($index)">{{sub}}</option>
+              <option value="{{$index}}" ng-repeat="sub in db.config.categories[catForm.catInd].subcategories track by $index" ng-selected="isSubSelected($index)">{{sub}}</option>
             </select>
           </div>
           <div class="medium-5 large-5 columns">
